@@ -1,4 +1,3 @@
-
 module CloudSkine
   class ContentChecker
     attr_reader :tag_char
@@ -33,7 +32,6 @@ module CloudSkine
     end
   end
 
-
   class Note
     attr_reader :header, :body, :encoding, :tag_char
 
@@ -44,7 +42,11 @@ module CloudSkine
       @body = body
       @tag_char = tag_char
       @tag_regex = /(?:^|\s)(?:#{Regexp.quote(@tag_char)})([a-zA-Z\d]+)/
-      @encoding = encoding unless (!encoding or POSSIBLE_ENCODINGS.include? encoding)
+      @encoding = encoding unless !valid_encoding?(encoding)
+    end
+
+    def valid_encoding?(encoding)
+      encoding and POSSIBLE_ENCODINGS.include? encoding
     end
 
     def get_note_tags
