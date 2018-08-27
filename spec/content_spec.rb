@@ -1,9 +1,9 @@
 require "content_checker"
 
-describe ContentChecker do
+describe CloudSkine::ContentChecker do
   describe ".has_tags?" do
     context "for a default checker" do
-      checker = ContentChecker.new
+      checker = CloudSkine::ContentChecker.new
       context "given an empty string" do
         it "returns false" do
           expect(checker.has_tags?("")).to be false
@@ -18,7 +18,7 @@ describe ContentChecker do
     end
 
     context "for a custom checker" do
-      checker2 = ContentChecker.new "&"
+      checker2 = CloudSkine::ContentChecker.new "&"
       context "given a string with tags" do
         it "returns true" do
           expect(checker2.has_tags?("&foo &bar")).to be true
@@ -34,7 +34,7 @@ describe ContentChecker do
   end
 
   context ".parse_tags" do
-    checker = ContentChecker.new
+    checker = CloudSkine::ContentChecker.new
     context "given a string with tags" do
       it "returns the tagged words" do
         expected_tags = ["foo", "bar"]
