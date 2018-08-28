@@ -41,12 +41,12 @@ module CloudSkine
       @tag_char = tag_char
     end
 
-    def tag_regex
-      /(?:^|\s)(?:#{Regexp.quote(@tag_char)})([a-zA-Z\d]+)/
+    def parse_tags(text)
+      scan_text(text, tag_regex)
     end
 
-    def valid_encoding?(encoding)
-      Encoding.list.map {|enc| enc.name}.include? encoding
+    def encode_text(text, encoding)
+      text.encode encoding unless !valid_encoding? encoding
     end
 
     def get_note_tags
@@ -58,16 +58,20 @@ module CloudSkine
     end
 
     protected
+    def tag_regex
+      /(?:^|\s)(?:#{Regexp.quote(@tag_char)})([a-zA-Z\d]+)/
+    end
+
+    def valid_encoding?(encoding)
+      Encoding.list.map {|enc| enc.name}.include? encoding
+    end
+
     def scan_text(text, regex)
       text.scan(regex).flatten
     end
 
-    def parse_tags(text)
-      scan_text(text, tag_regex)
-    end
-
-    def encode_text(text, encoding)
-      text.encode encoding unless !valid_encoding encoding
+    def has_tags?(text)
+      !!(text =~ tag_regex)
     end
   end
 end
