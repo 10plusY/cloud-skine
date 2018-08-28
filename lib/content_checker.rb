@@ -33,20 +33,20 @@ module CloudSkine
   end
 
   class Note
-    attr_reader :header, :body, :encoding, :tag_char
+    attr_reader :header, :body, :tag_char
 
-    POSSIBLE_ENCODINGS = Encoding.list.map {|enc| enc.name}
-
-    def initialize(header, body, tag_char, encoding=Encoding::UTF_8)
+    def initialize(header, body, tag_char)
       @header = header
       @body = body
       @tag_char = tag_char
-      @tag_regex = /(?:^|\s)(?:#{Regexp.quote(@tag_char)})([a-zA-Z\d]+)/
-      @encoding = encoding unless !valid_encoding?(encoding)
+    end
+
+    def tag_regex
+      /(?:^|\s)(?:#{Regexp.quote(@tag_char)})([a-zA-Z\d]+)/
     end
 
     def valid_encoding?(encoding)
-      encoding and POSSIBLE_ENCODINGS.include? encoding
+      Encoding.list.map {|enc| enc.name}.include? encoding
     end
 
     def get_note_tags
@@ -58,16 +58,16 @@ module CloudSkine
     end
 
     protected
-    def parse_tags(text)
-      text.scan(@tag_regex).flatten
+    def scan_text(text, regex)
+      text.scan(regex).flatten
     end
 
-    def encode_text(text)
-      begin
-        text.encode @encoding
-      rescue Encoding::ConverterNotFoundError
-        text
-      end
+    def parse_tags(text)
+      scan_text(text, tag_regex)
+    end
+
+    def encode_text(text, encoding)
+      text.encode encoding unless !valid_encoding encoding
     end
   end
 end
